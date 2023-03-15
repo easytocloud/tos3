@@ -16,24 +16,28 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build:
+  deploy:
+    name: UploadS3
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-
+    permissions:
+      id-token: write
+      contents: read
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+    - name: Checkout
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
+      uses: actions/checkout@v3
 
       # Runs a single command using the runners shell
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-region: eu-west-1
-          role-to-assume: arn:aws:iam::865756969688:role/GitHubIP-Role-MZ1ZGT8H5NQH
-          role-session-name: FromGithubs
-      - name: Copy files to the test website with the AWS CLI
-        run: |
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-region: eu-west-1
+        role-to-assume: arn:aws:iam::865756969688:role/GitHubIP-Role-MZ1ZGT8H5NQH
+        role-session-name: FromGithubs
+    - name: Copy files to the test website with the AWS CLI
+      run: |
           cd website
           aws s3 sync . s3://erixonzin
       
