@@ -15,31 +15,34 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
+  # This workflow contains a single job called "deploy"
   deploy:
     name: UploadS3
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    # necessary permissions
     permissions:
       id-token: write
       contents: read
+
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    - name: Checkout
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      # Checks-out your repository 
+    - name: Checkout repo
       uses: actions/checkout@v3
 
-      # Runs a single command using the runners shell
+      # Assume role in AWS with Identity from GitHub
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v2
       with:
         aws-region: eu-west-1
         role-to-assume: arn:aws:iam::865756969688:role/GitHubIP-Role-MZ1ZGT8H5NQH
         role-session-name: FromGithubs
-    - name: Copy files to the test website with the AWS CLI
+
+      # Perform (AWS) operations with federated identity
+    - name: Copy files to the test website using the AWS CLI
       run: |
-          cd website
-          env > foo.txt
-          export > bar.txt
-          aws s3 sync . s3://erixonzin
-      
+        cd website
+        aws sts get-caller-identity > whoiam.txt
+        aws s3 sync . s3://erixonzin --delete
+    
