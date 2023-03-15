@@ -31,7 +31,7 @@ jobs:
         with:
           aws-region: eu-west-1
           role-to-assume: arn:aws:iam::865756969688:role/GitHubIP-Role-MZ1ZGT8H5NQH
-          role-session-name: FromGithub
+          role-session-name: FromGithubs
       - name: Copy files to the test website with the AWS CLI
         run: |
           cd website
